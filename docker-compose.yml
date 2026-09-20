@@ -1,0 +1,54 @@
+services:
+
+  mysql:
+    image: mysql:8.0
+    container_name: restaurant-mysql
+    restart: unless-stopped
+
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456789
+      MYSQL_DATABASE: restaurent_management
+      MYSQL_USER: restaurant
+      MYSQL_PASSWORD: 123456789
+
+    ports:
+      - "3306:3306"
+
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p123456789"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+
+  backend:
+    build: .
+    container_name: restaurant-backend
+    restart: unless-stopped
+
+    environment:
+      PORT: 8080
+
+      DATABASE_URL: jdbc:mysql://mysql:3306/restaurent_management
+      DATABASE_USERNAME: restaurant
+      DATABASE_PASSWORD: 123456789
+
+      FRONTEND_URL: http://localhost:3000
+
+      JWT_SIGNER_KEY: KiPcgWahgz6NceGrW6EfCgFGpsfeqgCbHzr7tdItAni0cAdVOwWRTISeXvRDx5bh
+      JWT_ACCESS_DURATION: 604800
+      JWT_CONTEXT_DURATION: 28800
+
+    ports:
+      - "8080:8080"
+
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+
+volumes:
+  mysql_data:
