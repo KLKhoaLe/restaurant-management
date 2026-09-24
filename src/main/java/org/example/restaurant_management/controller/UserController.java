@@ -22,4 +22,5 @@ public class UserController {
                 .result(userService.createUser(userRequest))
                 .build();
     }
+    //test
 }
