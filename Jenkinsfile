@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = 'iragad/restaurant-management'
+        FRONTEND_URL = 'http://localhost:3000'
     }
 
     stages {
